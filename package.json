@@ -18,6 +18,8 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^0.5.1",
+    "co": "^4.1.0",
+    "kinda-aws": "^0.2.5",
     "kinda-config": "^0.2.2",
     "lodash": "^2.4.1"
   }

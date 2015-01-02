@@ -14,6 +14,9 @@ var defaultConfig = {
     },
     stderr: {
       handler: 'standard-error'
+    },
+    aws: {
+      handler: 'aws-cloud-watch-logs'
     }
   },
   levels: {
