@@ -1,5 +1,6 @@
 'use strict';
 
+var nodeUtil = require('util');
 var os = require('os');
 var _ = require('lodash');
 var config = require('kinda-config').create();
