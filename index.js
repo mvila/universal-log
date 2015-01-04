@@ -7,6 +7,7 @@ var config = require('kinda-config').create();
 
 var APP = config.name;
 var HOST = os.hostname();
+if (HOST.slice(-6) === '.local') HOST = HOST.slice(0, -6);
 
 var defaultConfig = {
   outputs: {
