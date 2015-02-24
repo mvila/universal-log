@@ -127,7 +127,7 @@ var Handler = {
           logGroupName: groupName,
           logStreamNamePrefix: streamName
         });
-        result = _.find(result.logStreams, { logStreamName: streamName });
+        result = _.find(result.logStreams, 'logStreamName', streamName);
         if (!result) throw new Error('stream not found');
         stream.sequenceToken = result.uploadSequenceToken;
       }

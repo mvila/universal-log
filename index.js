@@ -106,6 +106,18 @@ kindaLog.critical = kindaLog.log.bind(kindaLog, 'critical');
 kindaLog.alert = kindaLog.log.bind(kindaLog, 'alert');
 kindaLog.emergency = kindaLog.log.bind(kindaLog, 'emergency');
 
+var timerStartedAt;
+
+kindaLog.startTimer = function() {
+  timerStartedAt = new Date().getTime();
+};
+
+kindaLog.stopTimer = function() {
+  var timerStoppedAt = new Date().getTime();
+  var duration = timerStoppedAt - timerStartedAt;
+  this.info('Timer: ' + duration + ' ms');
+};
+
 kindaLog.logger = function(next) { // koa middleware
   return function *(next) {
     yield next;
