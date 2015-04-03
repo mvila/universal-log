@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var co = require('co');
+var wait = require('co-wait');
 var logs = require('kinda-aws/cloud-watch-logs').create();
 var common = require('./common');
 
@@ -71,7 +72,7 @@ var Handler = {
       while (!didSend) {
         var sequenceToken = yield getSequenceToken(groupName, streamName);
         try {
-          // console.log('putLogEvents');
+          // console.log('putLogEvents', events.length);
           var result = yield logs.putLogEvents({
             logGroupName: groupName,
             logStreamName: streamName,
@@ -81,8 +82,19 @@ var Handler = {
           setSequenceToken(groupName, streamName, result.nextSequenceToken);
           didSend = true;
         } catch (err) {
-          if (err.code !== 'InvalidSequenceTokenException') throw err;
-          setSequenceToken(groupName, streamName, undefined);
+          if (err.code === 'InvalidSequenceTokenException') {
+            setSequenceToken(groupName, streamName, undefined);
+            yield wait(500);
+          } else if (err.code === 'DataAlreadyAcceptedException') {
+            setSequenceToken(groupName, streamName, undefined);
+            yield wait(500);
+          } else if (err.code === 'OperationAbortedException') {
+            yield wait(500);
+          } else if (err.code === 'Throttling') {
+            yield wait(3000);
+          } else {
+            throw err;
+          }
         }
       }
     };
@@ -91,11 +103,23 @@ var Handler = {
 
     var createGroup = function *(groupName) {
       if (groups[groupName]) return;
-      try {
-        // console.log('createLogGroup');
-        yield logs.createLogGroup({ logGroupName: groupName });
-      } catch (err) {
-        if (err.code !== 'ResourceAlreadyExistsException') throw err;
+      var didCreate = false;
+      while (!didCreate) {
+        try {
+          // console.log('createLogGroup');
+          yield logs.createLogGroup({ logGroupName: groupName });
+          didCreate = true;
+        } catch (err) {
+          if (err.code === 'ResourceAlreadyExistsException') {
+            didCreate = true;
+          } else if (err.code === 'OperationAbortedException') {
+            yield wait(500);
+          } else if (err.code === 'Throttling') {
+            yield wait(3000);
+          } else {
+            throw err;
+          }
+        }
       }
       groups[groupName] = { streams: {} };
     };
@@ -104,14 +128,24 @@ var Handler = {
       var group = groups[groupName];
       if (!group) throw new Error('unknown group');
       if (group.streams[streamName]) return;
-      try {
-        // console.log('createLogStream');
-        yield logs.createLogStream({
-          logGroupName: groupName,
-          logStreamName: streamName
-        });
-      } catch (err) {
-        if (err.code !== 'ResourceAlreadyExistsException') throw err;
+      var didCreate = false;
+      while (!didCreate) {
+        try {
+          // console.log('createLogStream');
+          yield logs.createLogStream({
+            logGroupName: groupName,
+            logStreamName: streamName
+          });
+          didCreate = true;
+        } catch (err) {
+          if (err.code === 'ResourceAlreadyExistsException') {
+            didCreate = true;
+          } else if (err.code === 'Throttling') {
+            yield wait(3000);
+          } else {
+            throw err;
+          }
+        }
       }
       group.streams[streamName] = { sequenceToken: undefined };
     };
@@ -123,10 +157,23 @@ var Handler = {
       if (!stream) throw new Error('unknown stream');
       if (!stream.sequenceToken) {
         // console.log('describeLogStreams');
-        var result = yield logs.describeLogStreams({
-          logGroupName: groupName,
-          logStreamNamePrefix: streamName
-        });
+        var result;
+        var didDescribe = false;
+        while (!didDescribe) {
+          try {
+            result = yield logs.describeLogStreams({
+              logGroupName: groupName,
+              logStreamNamePrefix: streamName
+            });
+            didDescribe = true;
+          } catch (err) {
+            if (err.code === 'Throttling') {
+              yield wait(3000);
+            } else {
+              throw err;
+            }
+          }
+        }
         result = _.find(result.logStreams, 'logStreamName', streamName);
         if (!result) throw new Error('stream not found');
         stream.sequenceToken = result.uploadSequenceToken;
