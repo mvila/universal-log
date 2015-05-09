@@ -127,7 +127,7 @@ kindaLog.stopTimer = function() {
   this.info('Timer: ' + duration + ' ms');
 };
 
-kindaLog.logger = function(next) { // koa middleware
+kindaLog.getLoggerMiddleware = function(next) { // koa middleware
   return function *(next) {
     yield next;
     var level = this.logLevel != null ? this.logLevel : 'info';
