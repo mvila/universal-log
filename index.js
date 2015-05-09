@@ -53,6 +53,11 @@ kindaLog.registerHandler(
   require('./handlers/standard-error')
 );
 
+kindaLog.registerHandler(
+  'remote',
+  require('./handlers/remote')
+);
+
 if (!process.browser) {
   kindaLog.registerHandler(
     'aws-cloud-watch-logs',
@@ -86,13 +91,17 @@ kindaLog.getHandlerInstance = function(name, options) {
 kindaLog.log = function(level, message) {
   if (message && message.toJSON) message = message.toJSON();
   if (typeof message === 'object') message = nodeUtil.inspect(message);
+  this.dispatch(APP, HOST, level, message);
+};
+
+kindaLog.dispatch = function(app, host, level, message) {
   var outputs = moduleConfig.levels[level];
   if (!outputs) return;
   outputs.forEach(function(output) {
     output = moduleConfig.outputs[output];
     if (!output) return;
     var instance = this.getHandlerInstance(output.handler, output.options);
-    instance.log(APP, HOST, level, message);
+    instance.log(app, host, level, message);
   }.bind(this));
 };
 

@@ -19,9 +19,14 @@
   "dependencies": {
     "chalk": "^0.5.1",
     "co": "^4.1.0",
+    "co-body": "^2.0.0",
     "co-wait": "0.0.0",
     "kinda-aws": "^0.2.5",
     "kinda-config": "^0.2.2",
+    "kinda-http-client": "^0.1.4",
     "lodash": "^3.3.0"
+  },
+  "devDependencies": {
+    "koa": "^0.20.0"
   }
 }
