@@ -2,7 +2,7 @@
 
 var config = {
   'kinda-log': {
-    outputs: {
+    types: {
       remote: {
         handler: 'remote',
         options: {

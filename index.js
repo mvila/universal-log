@@ -10,7 +10,7 @@ var HOST = os.hostname();
 if (HOST.slice(-6) === '.local') HOST = HOST.slice(0, -6);
 
 var defaultConfig = {
-  outputs: {
+  types: {
     stdout: {
       handler: 'standard-output'
     },
@@ -88,17 +88,18 @@ kindaLog.getHandlerInstance = function(name, options) {
   return instance;
 };
 
-kindaLog.log = function(level, message) {
+kindaLog.log = function(level, message, options) {
   if (message && message.toJSON) message = message.toJSON();
   if (typeof message === 'object') message = nodeUtil.inspect(message);
-  this.dispatch(APP, HOST, level, message);
+  this.dispatch(APP, HOST, level, message, options);
 };
 
-kindaLog.dispatch = function(app, host, level, message) {
-  var outputs = moduleConfig.levels[level];
+kindaLog.dispatch = function(app, host, level, message, options) {
+  if (!options) options = {};
+  var outputs = options.outputs || moduleConfig.levels[level];
   if (!outputs) return;
   outputs.forEach(function(output) {
-    output = moduleConfig.outputs[output];
+    output = moduleConfig.types[output];
     if (!output) return;
     var instance = this.getHandlerInstance(output.handler, output.options);
     instance.log(app, host, level, message);
