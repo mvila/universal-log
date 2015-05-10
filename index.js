@@ -89,6 +89,16 @@ kindaLog.getHandlerInstance = function(name, options) {
 };
 
 kindaLog.log = function(level, message, options) {
+  if (_.isError(message) || message.toString() === '[object ErrorEvent]') {
+    var error = message;
+    var message = error.message || 'unknown error';
+    if (error.name) message = error.name + ': ' + message;
+    if (error.filename) {
+      var filename = error.filename;
+      if (error.lineno) filename += ':' + error.lineno;
+      message += ' (' + filename + ')';
+    }
+  }
   if (message && message.toJSON) message = message.toJSON();
   if (typeof message === 'object') message = nodeUtil.inspect(message);
   this.dispatch(APP, HOST, level, message, options);
@@ -96,7 +106,13 @@ kindaLog.log = function(level, message, options) {
 
 kindaLog.dispatch = function(app, host, level, message, options) {
   if (!options) options = {};
-  var outputs = options.outputs || moduleConfig.levels[level];
+  var outputs = moduleConfig.levels[level];
+  if (options.addedOutputs) {
+    outputs = _.union(outputs, options.addedOutputs);
+  }
+  if (options.removedOutputs) {
+    outputs = _.difference(outputs, options.removedOutputs);
+  }
   if (!outputs) return;
   outputs.forEach(function(output) {
     output = moduleConfig.types[output];
