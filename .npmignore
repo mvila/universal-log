@@ -1,0 +1,5 @@
+# ES6 source directory
+src
+
+# Secret keys
+examples/aws-cloud-watch-logs/config.js

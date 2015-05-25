@@ -1,6 +1,28 @@
-"use strict";
+'use strict';
 
-var log = require('../../').create();
+// ./node_modules/.bin/babel-node examples/remote/client.js
+
+let log = require('../../src/').create({
+  name: 'examples',
+  types: {
+    remote: {
+      handler: 'remote',
+      options: {
+        url: 'http://localhost:8888/v1'
+      }
+    }
+  },
+  levels: {
+    debug: ['remote'],
+    info: ['remote'],
+    notice: ['remote'],
+    warning: ['remote'],
+    error: ['remote'],
+    critical: ['remote'],
+    alert: ['remote'],
+    emergency: ['remote']
+  }
+});
 
 log.silence('Should not be displayed');
 log.debug('Small debugging message');

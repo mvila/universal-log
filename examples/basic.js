@@ -1,6 +1,8 @@
-"use strict";
+'use strict';
 
-var log = require('../').create();
+// ./node_modules/.bin/babel-node examples/basic.js
+
+let log = require('../src/').create({ name: 'examples' });
 
 log.silence('Should not be displayed');
 log.debug('Small debugging message');

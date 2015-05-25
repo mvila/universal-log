@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-var chalk = require('chalk');
+let chalk = require('chalk');
 
-var common = {};
+let common = {};
 
-var styles = {
+let styles = {
   debug: { levelColor: chalk.gray, messageColor: chalk.gray },
   info: { levelColor: chalk.green },
   notice: { levelColor: chalk.yellow },
@@ -18,9 +18,9 @@ var styles = {
 common.format = function(app, host, level, message, options) {
   if (!options) options = {};
 
-  var color;
+  let color;
 
-  var prefix = app || '';
+  let prefix = app || '';
   if (host) {
     if (prefix) prefix += '@';
     prefix += host;
@@ -32,7 +32,7 @@ common.format = function(app, host, level, message, options) {
     }
   }
 
-  var levelLabel = level.toUpperCase();
+  let levelLabel = level.toUpperCase();
   if (options.colorize) {
     color = styles[level].levelColor;
     if (color) levelLabel = color(levelLabel);
@@ -43,7 +43,7 @@ common.format = function(app, host, level, message, options) {
     if (color) message = color(message);
   }
 
-  var line = prefix + levelLabel + ' ' + message;
+  let line = prefix + levelLabel + ' ' + message;
 
   return line;
 };

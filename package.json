@@ -1,13 +1,15 @@
 {
   "name": "kinda-log",
-  "version": "0.1.14",
+  "version": "0.2.0",
   "description": "...",
   "repository": {
     "type": "git",
     "url": "git://github.com/kinda/kinda-log"
   },
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
+    "compile": "babel src --out-dir lib",
+    "prepublish": "npm run compile",
     "release": "(git checkout --quiet master && test -z \"$(git status --porcelain)\" && npm version $npm_config_release_type && git push --follow-tags) || echo \"An error occured (unclean repository?)\"",
     "release-patch": "npm run release --release-type=patch",
     "release-minor": "npm run release --release-type=minor",
@@ -17,16 +19,17 @@
   "author": "Manuel Vila <mvila@3base.com>",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^0.5.1",
-    "co": "^4.1.0",
-    "co-body": "^2.0.0",
+    "chalk": "^1.0.0",
+    "co": "^4.5.4",
     "co-wait": "0.0.0",
-    "kinda-aws": "^0.2.5",
-    "kinda-config": "^0.2.2",
-    "kinda-http-client": "^0.1.4",
-    "lodash": "^3.3.0"
+    "kinda-aws": "^0.3.0",
+    "kinda-http-client": "^0.2.0",
+    "kinda-object": "^0.2.0",
+    "kinda-util": "^0.2.0",
+    "lodash": "^3.9.1"
   },
   "devDependencies": {
-    "koa": "^0.20.0"
+    "babel": "^5.4.7",
+    "koa": "^0.21.0"
   }
 }
