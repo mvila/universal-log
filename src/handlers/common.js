@@ -15,15 +15,15 @@ let styles = {
   emergency: { levelColor: chalk.red.bold.inverse }
 };
 
-common.format = function(app, host, level, message, options) {
+common.format = function(applicationName, hostName, level, message, options) {
   if (!options) options = {};
 
   let color;
 
-  let prefix = app || '';
-  if (host) {
+  let prefix = applicationName || '';
+  if (hostName) {
     if (prefix) prefix += '@';
-    prefix += host;
+    prefix += hostName;
   }
   if (prefix) {
     prefix = '[' + prefix + '] ';

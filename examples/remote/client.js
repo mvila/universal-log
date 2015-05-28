@@ -3,7 +3,7 @@
 // ./node_modules/.bin/babel-node examples/remote/client.js
 
 let log = require('../../src/').create({
-  name: 'examples',
+  applicationName: 'examples',
   types: {
     remote: {
       handler: 'remote',

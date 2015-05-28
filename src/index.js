@@ -2,58 +2,51 @@
 
 let nodeUtil = require('util');
 let os = require('os');
+let crypto = require('crypto');
 let _ = require('lodash');
 let KindaObject = require('kinda-object');
 let util = require('kinda-util').create();
 
-let HOST = os.hostname();
-if (_.endsWith(HOST, '.local')) HOST = HOST.slice(0, -('.local'.length));
+let defaultOptions = {
+  types: {
+    stdout: {
+      handler: 'standard-output'
+    },
+    stderr: {
+      handler: 'standard-error'
+    }
+  },
+  levels: {
+    silence: [],
+    info: ['stdout'],
+    notice: ['stdout'],
+    warning: ['stdout'],
+    error: ['stderr'],
+    critical: ['stderr'],
+    alert: ['stderr'],
+    emergency: ['stderr']
+  }
+};
+if (util.getEnvironment() === 'development') {
+  defaultOptions.levels.debug = ['stdout'];
+}
+defaultOptions.hostName = os.hostname();
+if (_.endsWith(defaultOptions.hostName, '.local')) {
+  defaultOptions.hostName = defaultOptions.hostName.slice(0, -('.local'.length));
+}
 
 let KindaLog = KindaObject.extend('KindaLog', function() {
-  this.creator = function(instanceOptions) {
-    let options = {
-      types: {
-        stdout: {
-          handler: 'standard-output'
-        },
-        stderr: {
-          handler: 'standard-error'
-        },
-        aws: {
-          handler: 'aws-cloud-watch-logs'
-        }
-      },
-      levels: {
-        silence: [],
-        info: ['stdout'],
-        notice: ['stdout'],
-        warning: ['stdout'],
-        error: ['stderr'],
-        critical: ['stderr'],
-        alert: ['stderr'],
-        emergency: ['stderr']
-      }
-    };
-    if (util.getEnvironment() === 'development') options.levels.debug = ['stdout'];
-    _.merge(options, this.getOptionsFromContext());
-    _.merge(options, instanceOptions);
+  // options:
+  //   applicationName
+  //   hostName
+  //   types
+  //   levels
+  this.creator = function(options = {}) {
+    _.defaults(options, defaultOptions);
+    this.applicationName = options.applicationName;
+    this.hostName = options.hostName;
     this.types = options.types;
     this.levels = options.levels;
-    this.name = options.name;
-  };
-
-  this.getOptionsFromContext = function() {
-    let options = {};
-    if ('name' in this.context) {
-      options.name = this.context.name;
-    }
-    if ('logTypes' in this.context) {
-      options.types = this.context.logTypes;
-    }
-    if ('logLevels' in this.context) {
-      options.levels = this.context.logLevels;
-    }
-    return options;
   };
 
   this.log = function(level, message, options) {
@@ -69,10 +62,10 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
     }
     if (message && message.toJSON) message = message.toJSON();
     if (typeof message === 'object') message = nodeUtil.inspect(message);
-    this.dispatch(this.name, HOST, level, message, options);
+    this.dispatch(this.applicationName, this.hostName, level, message, options);
   };
 
-  this.dispatch = function(app, host, level, message, options) {
+  this.dispatch = function(applicationName, hostName, level, message, options) {
     if (!options) options = {};
     let outputs = this.levels[level];
     if (options.addedOutputs) {
@@ -85,8 +78,8 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
     outputs.forEach(function(output) {
       output = this.types[output];
       if (!output) return;
-      let instance = this.class.getHandlerInstance(this, output.handler, output.options);
-      instance.log(app, host, level, message);
+      let instance = this.class.getHandlerInstance(output.handler, output.options);
+      instance.log(applicationName, hostName, level, message);
     }.bind(this));
   };
 
@@ -153,17 +146,17 @@ KindaLog.getHandler = function(name) {
   return handler;
 };
 
-KindaLog.getHandlerInstance = function(parent, name, options) {
-  if (!this._handlerInstanceRecords) this._handlerInstanceRecords = [];
-  let instanceRecord = _.find(this._handlerInstanceRecords, function(h) {
-    return h.name === name && _.isEqual(h.options, options);
-  });
-  if (instanceRecord) return instanceRecord.instance;
-  let handler = this.getHandler(name);
-  let instance = parent.create(handler, options);
-  instanceRecord = { name, options, instance };
-  this._handlerInstanceRecords.push(instanceRecord);
-  return instance;
-};
+KindaLog.getHandlerInstance = _.memoize(
+  function(name, options) {
+    let handler = this.getHandler(name);
+    let instance = handler.create(options);
+    return instance;
+  },
+  function(name, options = {}) {
+    options = JSON.stringify(options);
+    options = crypto.createHash('md5').update(options).digest('hex');
+    return name + ', ' + options;
+  }
+);
 
 module.exports = KindaLog;

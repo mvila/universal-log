@@ -2,18 +2,29 @@
 
 // ./node_modules/.bin/babel-node --harmony examples/aws-cloud-watch-logs/index.js
 
-let _ = require('lodash');
 // let co = require('co');
 // let wait = require('co-wait');
 let log = require('../../src/').create({
-  name: 'examples',
+  applicationName: 'examples',
+  types: {
+    stdout: {
+      handler: 'standard-output'
+    },
+    stderr: {
+      handler: 'standard-error'
+    },
+    aws: {
+      handler: 'aws-cloud-watch-logs',
+      options: {
+        awsCloudWatchLogs: require('./aws-config')
+      }
+    }
+  },
   levels: {
     info: ['stdout', 'aws'],
     error: ['stderr', 'aws']
   }
 });
-let config = require('./config');
-_.assign(log.context, config);
 
 log.info('Hello');
 for (let i = 1; i <= 5; i++) {

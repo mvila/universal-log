@@ -2,4 +2,4 @@
 src
 
 # Secret keys
-examples/aws-cloud-watch-logs/config.js
+aws-config.js

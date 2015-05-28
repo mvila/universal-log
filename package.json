@@ -21,7 +21,6 @@
   "dependencies": {
     "chalk": "^1.0.0",
     "co": "^4.5.4",
-    "co-wait": "0.0.0",
     "kinda-aws": "^0.3.0",
     "kinda-http-client": "^0.2.0",
     "kinda-object": "^0.2.0",
@@ -30,6 +29,7 @@
   },
   "devDependencies": {
     "babel": "^5.4.7",
+    "co-wait": "0.0.0",
     "koa": "^0.21.0"
   }
 }
