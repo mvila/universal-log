@@ -47,6 +47,17 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
     this.hostName = options.hostName;
     this.types = options.types;
     this.levels = options.levels;
+
+    // make convenient shorthands bound to the instance
+    let possibleLevels = [
+      'silence', 'debug', 'info', 'notice', 'warning',
+      'error', 'critical', 'alert', 'emergency'
+    ];
+    for (let level of possibleLevels) {
+      this[level] = function(...args) {
+        this.log(level, ...args);
+      }.bind(this);
+    }
   };
 
   this.log = function(level, message, options) {
@@ -82,16 +93,6 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
       instance.log(applicationName, hostName, level, message);
     }.bind(this));
   };
-
-  let possibleLevels = [
-    'silence', 'debug', 'info', 'notice', 'warning',
-    'error', 'critical', 'alert', 'emergency'
-  ];
-  possibleLevels.forEach(function(level) {
-    this[level] = function(...args) {
-      this.log(level, ...args);
-    };
-  }, this);
 
   this.startTimer = function() {
     this._timerStartedAt = new Date().getTime();

@@ -16,6 +16,7 @@
     "generator-star-spacing": [2],
     "indent": [2, 2, { "indentSwitchCase": true }],
     "linebreak-style": [2],
+    "no-loop-func": [0],
     "no-lonely-if": [2],
     "no-multiple-empty-lines": [2],
     "no-nested-ternary": [2],
