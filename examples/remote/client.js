@@ -2,26 +2,11 @@
 
 // ./node_modules/.bin/babel-node examples/remote/client.js
 
-let log = require('../../src/').create({
-  applicationName: 'examples',
-  types: {
-    remote: {
-      handler: 'remote',
-      options: {
-        url: 'http://localhost:8888/v1'
-      }
-    }
-  },
-  levels: {
-    debug: ['remote'],
-    info: ['remote'],
-    notice: ['remote'],
-    warning: ['remote'],
-    error: ['remote'],
-    critical: ['remote'],
-    alert: ['remote'],
-    emergency: ['remote']
-  }
+let KindaLog = require('../../src/');
+
+let log = KindaLog.create({
+  appName: 'examples',
+  outputs: [KindaLog.RemoteOutput.create({ url: 'http://localhost:8888/v1' })]
 });
 
 log.silence('Should not be displayed');

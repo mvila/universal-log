@@ -5,7 +5,7 @@ let co = require('co');
 let KindaObject = require('kinda-object');
 let KindaHTTPClient = require('kinda-http-client');
 
-let RemoteHandler = KindaObject.extend('RemoteHandler', function() {
+let RemoteOutput = KindaObject.extend('RemoteOutput', function() {
   this.creator = function(options = {}) {
     let url = options.url;
     if (!url) throw new Error('remote log handler \'url\' is missing');
@@ -20,12 +20,12 @@ let RemoteHandler = KindaObject.extend('RemoteHandler', function() {
     this.httpClient = httpClient;
   };
 
-  this.log = function(applicationName, hostName, level, message) {
+  this.write = function(appName, hostName, level, message) {
     co(function *() {
       yield this.httpClient.request({
         method: 'POST',
         url: this.url,
-        body: { applicationName, hostName, level, message },
+        body: { appName, hostName, level, message },
         json: true
       });
     }.bind(this)).catch(function(err) {
@@ -34,4 +34,4 @@ let RemoteHandler = KindaObject.extend('RemoteHandler', function() {
   };
 });
 
-module.exports = RemoteHandler;
+module.exports = RemoteOutput;

@@ -2,29 +2,13 @@
 
 // ./node_modules/.bin/babel-node --harmony examples/aws-cloud-watch-logs/index.js
 
-// let co = require('co');
-// let wait = require('co-wait');
-let log = require('../../src/').create({
-  applicationName: 'examples',
-  types: {
-    stdout: {
-      handler: 'standard-output'
-    },
-    stderr: {
-      handler: 'standard-error'
-    },
-    aws: {
-      handler: 'aws-cloud-watch-logs',
-      options: {
-        awsCloudWatchLogs: require('./aws-config')
-      }
-    }
-  },
-  levels: {
-    info: ['stdout', 'aws'],
-    error: ['stderr', 'aws']
-  }
-});
+let KindaLog = require('../../src/');
+let awsConfig = require('./aws-config');
+
+let log = KindaLog.create({ appName: 'examples' });
+log.addOutput(KindaLog.AWSCloudWatchLogsOutput.create({
+  awsCloudWatchLogs: awsConfig
+}));
 
 log.info('Hello');
 for (let i = 1; i <= 5; i++) {
@@ -32,6 +16,9 @@ for (let i = 1; i <= 5; i++) {
 }
 log.error('An error?');
 
+// let co = require('co');
+// let wait = require('co-wait');
+//
 // co(function *() {
 //   log.info('Start');
 //   yield wait(2000);

@@ -2,7 +2,7 @@
 
 // ./node_modules/.bin/babel-node examples/basic.js
 
-let log = require('../src/').create({ applicationName: 'examples' });
+let log = require('../src/').create({ appName: 'examples' });
 
 log.silence('Should not be displayed');
 log.debug('Small debugging message');
