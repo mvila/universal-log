@@ -13,3 +13,5 @@ log.error('There is something wrong');
 log.critical('There is a very serious error');
 log.alert('The building is on fire');
 log.emergency('What could be worse?');
+
+// log.error(new Error('An error occured'));

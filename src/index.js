@@ -54,6 +54,7 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
   };
 
   this.log = function(level, message) {
+    let options = {};
     if (_.isError(message) || message.toString() === '[object ErrorEvent]') {
       let error = message;
       message = error.message || 'unknown error';
@@ -63,16 +64,18 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
         if (error.lineno) filename += ':' + error.lineno;
         message += ' (' + filename + ')';
       }
+      error.message = message;
+      options.error = error;
     }
     if (message && message.toJSON) message = message.toJSON();
     if (typeof message === 'object') message = nodeUtil.inspect(message);
-    this.dispatch(this.appName, this.hostName, level, message);
+    this.dispatch(this.appName, this.hostName, level, message, options);
   };
 
-  this.dispatch = function(appName, hostName, level, message) {
+  this.dispatch = function(appName, hostName, level, message, options) {
     if (_.includes(this.mutedLevels, level)) return;
     this.outputs.forEach(output => {
-      output.write(appName, hostName, level, message);
+      output.write(appName, hostName, level, message, options);
     });
   };
 

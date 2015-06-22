@@ -15,10 +15,14 @@ let ConsoleOutput = KindaObject.extend('ConsoleOutput', function() {
     emergency: { method: 'error', levelColor: chalk.red.bold.inverse }
   };
 
-  this.write = function(appName, hostName, level, message) {
+  this.write = function(appName, hostName, level, message, options = {}) {
     message = this.format(
       appName, hostName, level, message, { colorize: true }
     );
+    if (options.error) {
+      options.error.message = message;
+      message = options.error.stack || options.error;
+    }
     let method = this.styles[level].method;
     console[method](message);
   };
