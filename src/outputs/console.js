@@ -20,7 +20,6 @@ let ConsoleOutput = KindaObject.extend('ConsoleOutput', function() {
       appName, hostName, level, message, { colorize: true }
     );
     if (options.error) {
-      options.error.message = message;
       message = options.error.stack || options.error;
     }
     let method = this.styles[level].method;

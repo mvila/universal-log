@@ -53,9 +53,9 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
     this.outputs.push(output);
   };
 
-  this.log = function(level, message) {
+  this.log = function(level, message = 'undefined message') {
     let options = {};
-    if (_.isError(message) || message.toString() === '[object ErrorEvent]') {
+    if (_.isError(message) || message.toString && message.toString() === '[object ErrorEvent]') {
       let error = message;
       message = error.message || 'unknown error';
       if (error.name) message = error.name + ': ' + message;
@@ -64,7 +64,6 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
         if (error.lineno) filename += ':' + error.lineno;
         message += ' (' + filename + ')';
       }
-      error.message = message;
       options.error = error;
     }
     if (message && message.toJSON) message = message.toJSON();
