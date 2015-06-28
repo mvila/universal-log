@@ -1,5 +1,7 @@
-# ES6 source directory
+.eslintrc
+.npmignore
+.travis.yml
 src
-
-# Secret keys
+test.js
+examples
 aws-config.js
