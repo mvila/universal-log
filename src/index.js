@@ -7,46 +7,43 @@ let util = require('kinda-util').create();
 
 let KindaLog = KindaObject.extend('KindaLog', function() {
   // options:
+  //   logName
   //   appName
   //   hostName
   //   outputs
   //   mutedLevels
   //   decorators
-  //   includeEnvironment (default: true)
   this.creator = function(options = {}) {
-    if (!options.hostName) {
-      options.hostName = util.getHostName();
+    let logName = options.logName;
+    if (!logName) {
+      logName = options.appName;
+      if (logName) logName += '.'; else logName = '';
+      logName += util.getEnvironment();
     }
 
-    if (!options.outputs) {
+    let hostName = options.hostName || util.getHostName();
+
+    let outputs = options.outputs;
+    if (!outputs) {
       let output = KindaLog.ConsoleOutput.create();
-      options.outputs = [output];
+      outputs = [output];
     }
 
-    if (!options.mutedLevels) {
-      options.mutedLevels = ['silence'];
+    let mutedLevels = options.mutedLevels;
+    if (!mutedLevels) {
+      mutedLevels = ['silence'];
       if (util.getEnvironment() !== 'development') {
-        options.mutedLevels.push('debug');
+        mutedLevels.push('debug');
       }
     }
 
-    if (options.includeEnvironment == null) {
-      options.includeEnvironment = true;
-    }
+    let decorators = options.decorators || [];
 
-    let appName = options.appName;
-    if (options.includeEnvironment) {
-      if (appName) appName += '.'; else appName = '';
-      appName += util.getEnvironment();
-    }
-
-    if (!options.decorators) options.decorators = [];
-
-    this.appName = appName;
-    this.hostName = options.hostName;
-    this.outputs = options.outputs;
-    this.mutedLevels = options.mutedLevels;
-    this.decorators = options.decorators;
+    this.logName = logName;
+    this.hostName = hostName;
+    this.outputs = outputs;
+    this.mutedLevels = mutedLevels;
+    this.decorators = decorators;
 
     // make convenient shorthands bound to the instance
     let levels = [
@@ -91,13 +88,13 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
       message = decorator(message);
     }
 
-    this.dispatch(this.appName, this.hostName, level, message, options);
+    this.dispatch(this.logName, this.hostName, level, message, options);
   };
 
-  this.dispatch = function(appName, hostName, level, message, options) {
+  this.dispatch = function(logName, hostName, level, message, options) {
     if (_.includes(this.mutedLevels, level)) return;
     this.outputs.forEach(output => {
-      output.write(appName, hostName, level, message, options);
+      output.write(logName, hostName, level, message, options);
     });
   };
 

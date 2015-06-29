@@ -20,12 +20,12 @@ let RemoteOutput = KindaObject.extend('RemoteOutput', function() {
     this.httpClient = httpClient;
   };
 
-  this.write = function(appName, hostName, level, message) {
+  this.write = function(logName, hostName, level, message) {
     co(function *() {
       yield this.httpClient.request({
         method: 'POST',
         url: this.url,
-        body: { appName, hostName, level, message },
+        body: { logName, hostName, level, message },
         json: true
       });
     }.bind(this)).catch(function(err) {

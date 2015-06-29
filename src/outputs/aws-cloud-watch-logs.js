@@ -10,8 +10,8 @@ let AWSCloudWatchLogsOutput = KindaObject.extend('AWSCloudWatchLogsOutput', func
     this.logs = logs;
   };
 
-  this.write = function(appName, hostName, level, message) {
-    let groupName = appName || 'undefined-group';
+  this.write = function(logName, hostName, level, message) {
+    let groupName = logName || 'undefined-group';
     let streamName = hostName || 'undefined-stream';
     message = '[' + level.toUpperCase() + '] ' + message;
     this.logs.putEvent(groupName, streamName, message);

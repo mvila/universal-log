@@ -15,9 +15,9 @@ let ConsoleOutput = KindaObject.extend('ConsoleOutput', function() {
     emergency: { method: 'error', levelColor: chalk.red.bold.inverse }
   };
 
-  this.write = function(appName, hostName, level, message, options = {}) {
+  this.write = function(logName, hostName, level, message, options = {}) {
     message = this.format(
-      appName, hostName, level, message, { colorize: true }
+      logName, hostName, level, message, { colorize: true }
     );
     if (options.error) {
       message = options.error.stack || options.error;
@@ -26,10 +26,10 @@ let ConsoleOutput = KindaObject.extend('ConsoleOutput', function() {
     console[method](message);
   };
 
-  this.format = function(appName, hostName, level, message, options = {}) {
+  this.format = function(logName, hostName, level, message, options = {}) {
     let color;
 
-    let prefix = appName || '';
+    let prefix = logName || '';
     if (hostName) {
       if (prefix) prefix += '@';
       prefix += hostName;
