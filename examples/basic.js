@@ -4,6 +4,10 @@
 
 let log = require('../src/').create({ appName: 'examples' });
 
+log.addDecorator(function(message) {
+  return message + ' (user@domain.com)';
+});
+
 log.silence('Should not be displayed');
 log.debug('Small debugging message');
 log.info('Little info');

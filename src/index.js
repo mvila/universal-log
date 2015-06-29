@@ -11,6 +11,7 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
   //   hostName
   //   outputs
   //   mutedLevels
+  //   decorators
   //   includeEnvironment (default: true)
   this.creator = function(options = {}) {
     if (!options.hostName) {
@@ -38,10 +39,14 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
       if (appName) appName += '.'; else appName = '';
       appName += util.getEnvironment();
     }
+
+    if (!options.decorators) options.decorators = [];
+
     this.appName = appName;
     this.hostName = options.hostName;
     this.outputs = options.outputs;
     this.mutedLevels = options.mutedLevels;
+    this.decorators = options.decorators;
 
     // make convenient shorthands bound to the instance
     let levels = [
@@ -59,8 +64,13 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
     this.outputs.push(output);
   };
 
+  this.addDecorator = function(decorator) {
+    this.decorators.push(decorator);
+  };
+
   this.log = function(level, message = 'undefined message') {
     let options = {};
+
     if (_.isError(message) || message.toString && message.toString() === '[object ErrorEvent]') {
       let error = message;
       message = error.message || 'unknown error';
@@ -72,8 +82,15 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
       }
       options.error = error;
     }
+
     if (message && message.toJSON) message = message.toJSON();
     if (typeof message === 'object') message = nodeUtil.inspect(message);
+    if (!_.isString(message)) message = String(message);
+
+    for (let decorator of this.decorators) {
+      message = decorator(message);
+    }
+
     this.dispatch(this.appName, this.hostName, level, message, options);
   };
 
