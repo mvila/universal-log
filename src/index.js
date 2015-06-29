@@ -11,6 +11,7 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
   //   hostName
   //   outputs
   //   mutedLevels
+  //   includeEnvironment (default: true)
   this.creator = function(options = {}) {
     if (!options.hostName) {
       options.hostName = util.getHostName();
@@ -28,7 +29,16 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
       }
     }
 
-    this.appName = options.appName;
+    if (options.includeEnvironment == null) {
+      options.includeEnvironment = true;
+    }
+
+    let appName = options.appName;
+    if (options.includeEnvironment) {
+      if (appName) appName += '.'; else appName = '';
+      appName += util.getEnvironment();
+    }
+    this.appName = appName;
     this.hostName = options.hostName;
     this.outputs = options.outputs;
     this.mutedLevels = options.mutedLevels;
