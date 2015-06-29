@@ -1,7 +1,6 @@
 'use strict';
 
 let nodeUtil = require('util');
-let os = require('os');
 let _ = require('lodash');
 let KindaObject = require('kinda-object');
 let util = require('kinda-util').create();
@@ -14,10 +13,7 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
   //   mutedLevels
   this.creator = function(options = {}) {
     if (!options.hostName) {
-      options.hostName = os.hostname();
-      if (_.endsWith(options.hostName, '.local')) {
-        options.hostName = options.hostName.slice(0, -('.local'.length));
-      }
+      options.hostName = util.getHostName();
     }
 
     if (!options.outputs) {
