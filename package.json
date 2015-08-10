@@ -21,7 +21,6 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^1.0.0",
-    "co": "^4.5.4",
     "kinda-aws": "^0.3.0",
     "kinda-http-client": "^0.2.0",
     "kinda-object": "^0.3.0",
@@ -31,9 +30,9 @@
   "devDependencies": {
     "babel": "^5.4.7",
     "babel-eslint": "^4.0.5",
-    "co-wait": "0.0.0",
     "eslint": "^1.0.0",
     "eslint-config-kinda": "^0.2.0",
+    "kinda-util": "^0.2.7",
     "koa": "^0.21.0"
   }
 }

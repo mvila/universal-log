@@ -1,7 +1,6 @@
 'use strict';
 
 let _ = require('lodash');
-let co = require('co');
 let KindaObject = require('kinda-object');
 let KindaHTTPClient = require('kinda-http-client');
 
@@ -21,14 +20,14 @@ let RemoteOutput = KindaObject.extend('RemoteOutput', function() {
   };
 
   this.write = function(logName, hostName, level, message) {
-    co(function *() {
-      yield this.httpClient.request({
+    (async function() {
+      await this.httpClient.request({
         method: 'POST',
         url: this.url,
         body: { logName, hostName, level, message },
         json: true
       });
-    }.bind(this)).catch(function(err) {
+    }).call(this).catch(function(err) {
       console.error(err.stack || err);
     });
   };
