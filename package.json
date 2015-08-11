@@ -32,6 +32,7 @@
     "babel-eslint": "^4.0.5",
     "eslint": "^1.0.0",
     "eslint-config-kinda": "^0.2.0",
+    "kinda-log-server": "^0.1.5",
     "kinda-util": "^0.2.7",
     "koa": "^0.21.0"
   }
