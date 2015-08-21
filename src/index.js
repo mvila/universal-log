@@ -98,14 +98,16 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
     });
   };
 
-  this.startTimer = function() {
-    this._timerStartedAt = new Date().getTime();
-  };
-
-  this.stopTimer = function() {
-    let timerStoppedAt = new Date().getTime();
-    let duration = timerStoppedAt - this._timerStartedAt;
-    this.info('Timer: ' + duration + ' ms');
+  this.createTimer = function(label = 'Timer') {
+    let startedAt = new Date().getTime();
+    let timer = {
+      stop: () => {
+        let stoppedAt = new Date().getTime();
+        let duration = stoppedAt - startedAt;
+        this.debug(label + ': ' + duration + ' ms');
+      }
+    };
+    return timer;
   };
 
   this.getLoggerMiddleware = function() { // koa logger middleware
