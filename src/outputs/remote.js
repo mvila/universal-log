@@ -1,36 +1,28 @@
 'use strict';
 
-let _ = require('lodash');
-let KindaObject = require('kinda-object');
-let KindaHTTPClient = require('kinda-http-client');
+import fetch from 'isomorphic-fetch';
 
-let RemoteOutput = KindaObject.extend('RemoteOutput', function() {
-  this.creator = function(options = {}) {
+export class RemoteOutput {
+  constructor(options = {}) {
     let url = options.url;
-    if (!url) throw new Error('remote log handler \'url\' is missing');
-    if (_.endsWith(url, '/')) url = url.slice(0, -1);
+    if (!url) throw new Error('Remote output \'url\' is missing');
+    if (url.endsWith('/')) url = url.slice(0, -1);
     url += '/logs';
     this.url = url;
+  }
 
-    let httpClient = options.httpClient;
-    if (!KindaHTTPClient.isClassOf(httpClient)) {
-      httpClient = KindaHTTPClient.create(httpClient);
-    }
-    this.httpClient = httpClient;
-  };
-
-  this.write = function(logName, hostName, level, message) {
+  write(logName, hostName, level, message) {
     (async function() {
-      await this.httpClient.request({
-        method: 'POST',
-        url: this.url,
-        body: { logName, hostName, level, message },
-        json: true
+      await fetch(this.url, {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ logName, hostName, level, message })
       });
-    }).call(this).catch(function(err) {
-      console.error(err.stack || err);
-    });
-  };
-});
+    }).call(this).catch(console.error);
+  }
+}
 
-module.exports = RemoteOutput;
+export default RemoteOutput;

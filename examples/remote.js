@@ -1,12 +1,12 @@
 'use strict';
 
-// ./node_modules/.bin/babel-node examples/remote/client.js
+// ./node_modules/.bin/babel-node examples/remote.js
 
-let KindaLog = require('../../src/');
+import UniversalLog, { RemoteOutput } from '../src/';
 
-let log = KindaLog.create({
+let log = new UniversalLog({
   appName: 'examples',
-  outputs: [KindaLog.RemoteOutput.create({ url: 'http://localhost:8888/v1' })]
+  outputs: [new RemoteOutput({ url: 'http://localhost:8888/v1' })]
 });
 
 log.silence('Should not be displayed');

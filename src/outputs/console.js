@@ -1,32 +1,31 @@
 'use strict';
 
-let chalk = require('chalk');
-let KindaObject = require('kinda-object');
+import chalk from 'chalk';
 
-let ConsoleOutput = KindaObject.extend('ConsoleOutput', function() {
-  this.styles = {
-    debug: { method: 'log', levelColor: chalk.gray, messageColor: chalk.gray },
-    info: { method: 'info', levelColor: chalk.green },
-    notice: { method: 'info', levelColor: chalk.yellow },
-    warning: { method: 'warn', levelColor: chalk.magenta },
-    error: { method: 'error', levelColor: chalk.red },
-    critical: { method: 'error', levelColor: chalk.red.underline },
-    alert: { method: 'error', levelColor: chalk.red.bold },
-    emergency: { method: 'error', levelColor: chalk.red.bold.inverse }
-  };
+const STYLES = {
+  debug: { method: 'log', levelColor: chalk.gray, messageColor: chalk.gray },
+  info: { method: 'info', levelColor: chalk.green },
+  notice: { method: 'info', levelColor: chalk.yellow },
+  warning: { method: 'warn', levelColor: chalk.magenta },
+  error: { method: 'error', levelColor: chalk.red },
+  critical: { method: 'error', levelColor: chalk.red.underline },
+  alert: { method: 'error', levelColor: chalk.red.bold },
+  emergency: { method: 'error', levelColor: chalk.red.bold.inverse }
+};
 
-  this.write = function(logName, hostName, level, message, options = {}) {
+export class ConsoleOutput {
+  write(logName, hostName, level, message, options = {}) {
     message = this.format(
       logName, hostName, level, message, { colorize: true }
     );
     if (options.error) {
       message = options.error.stack || options.error;
     }
-    let method = this.styles[level].method;
+    let method = STYLES[level].method;
     console[method](message);
-  };
+  }
 
-  this.format = function(logName, hostName, level, message, options = {}) {
+  format(logName, hostName, level, message, options = {}) {
     let color;
 
     let prefix = logName || '';
@@ -43,19 +42,19 @@ let ConsoleOutput = KindaObject.extend('ConsoleOutput', function() {
 
     let levelLabel = level.toUpperCase();
     if (options.colorize) {
-      color = this.styles[level].levelColor;
+      color = STYLES[level].levelColor;
       if (color) levelLabel = color(levelLabel);
     }
 
     if (options.colorize) {
-      color = this.styles[level].messageColor;
+      color = STYLES[level].messageColor;
       if (color) message = color(message);
     }
 
     let line = prefix + levelLabel + ' ' + message;
 
     return line;
-  };
-});
+  }
+}
 
-module.exports = ConsoleOutput;
+export default ConsoleOutput;

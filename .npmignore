@@ -1,7 +1,5 @@
 .eslintrc
-.npmignore
 .travis.yml
 src
-test.js
 examples
 aws-config.js

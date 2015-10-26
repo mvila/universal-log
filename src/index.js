@@ -1,11 +1,14 @@
 'use strict';
 
-let nodeUtil = require('util');
-let _ = require('lodash');
-let KindaObject = require('kinda-object');
-let util = require('kinda-util').create();
+import util from 'util';
+import environment from 'better-node-env';
+import betterHostname from 'better-hostname';
 
-let KindaLog = KindaObject.extend('KindaLog', function() {
+import ConsoleOutput from './outputs/console';
+import RemoteOutput from './outputs/remote';
+// import AWSCloudWatchLogsOutput from './outputs/aws-cloud-watch-logs';
+
+export class UniversalLog {
   // options:
   //   logName
   //   appName
@@ -13,26 +16,26 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
   //   outputs
   //   mutedLevels
   //   decorators
-  this.creator = function(options = {}) {
+  constructor(options = {}) {
     let logName = options.logName;
     if (!logName) {
       logName = options.appName;
       if (logName) logName += '.'; else logName = '';
-      logName += util.getEnvironment();
+      logName += environment;
     }
 
-    let hostName = options.hostName || util.getHostName();
+    let hostName = options.hostName || betterHostname;
 
     let outputs = options.outputs;
     if (!outputs) {
-      let output = KindaLog.ConsoleOutput.create();
+      let output = new ConsoleOutput();
       outputs = [output];
     }
 
     let mutedLevels = options.mutedLevels;
     if (!mutedLevels) {
       mutedLevels = ['silence'];
-      if (util.getEnvironment() !== 'development') {
+      if (environment !== 'development') {
         mutedLevels.push('debug');
       }
     }
@@ -55,22 +58,22 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
         this.log(level, ...args);
       }.bind(this);
     }
-  };
+  }
 
-  this.addOutput = function(output) {
+  addOutput(output) {
     this.outputs.push(output);
-  };
+  }
 
-  this.addDecorator = function(decorator) {
+  addDecorator(decorator) {
     this.decorators.push(decorator);
-  };
+  }
 
-  this.log = function(level, message = 'undefined message') {
+  log(level, message = 'Undefined message') {
     let options = {};
 
-    if (_.isError(message) || message.toString && message.toString() === '[object ErrorEvent]') {
+    if ((message instanceof Error) || message.toString && message.toString() === '[object ErrorEvent]') {
       let error = message;
-      message = error.message || 'unknown error';
+      message = error.message || 'Unknown error';
       if (error.name) message = error.name + ': ' + message;
       if (error.filename) {
         let filename = error.filename;
@@ -81,24 +84,24 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
     }
 
     if (message && message.toJSON) message = message.toJSON();
-    if (typeof message === 'object') message = nodeUtil.inspect(message);
-    if (!_.isString(message)) message = String(message);
+    if (typeof message === 'object') message = util.inspect(message);
+    if (typeof message !== 'string') message = String(message);
 
     for (let decorator of this.decorators) {
       message = decorator(message);
     }
 
     this.dispatch(this.logName, this.hostName, level, message, options);
-  };
+  }
 
-  this.dispatch = function(logName, hostName, level, message, options) {
-    if (_.includes(this.mutedLevels, level)) return;
-    this.outputs.forEach(output => {
+  dispatch(logName, hostName, level, message, options) {
+    if (this.mutedLevels.includes(level)) return;
+    for (let output of this.outputs) {
       output.write(logName, hostName, level, message, options);
-    });
-  };
+    }
+  }
 
-  this.createTimer = function(label = 'Timer') {
+  createTimer(label = 'Timer') {
     let startedAt = new Date().getTime();
     let timer = {
       stop: () => {
@@ -108,22 +111,17 @@ let KindaLog = KindaObject.extend('KindaLog', function() {
       }
     };
     return timer;
-  };
+  }
 
-  this.getLoggerMiddleware = function() { // koa logger middleware
+  getLoggerMiddleware() { // koa logger middleware
     let that = this;
     return function *(next) {
       yield next;
       let level = this.logLevel != null ? this.logLevel : 'info';
       that[level](this.method + ' ' + this.url);
     };
-  };
-});
-
-KindaLog.ConsoleOutput = require('./outputs/console');
-KindaLog.RemoteOutput = require('./outputs/remote');
-if (!process.browser) {
-  KindaLog.AWSCloudWatchLogsOutput = require('./outputs/aws-cloud-watch-logs');
+  }
 }
 
-module.exports = KindaLog;
+export default UniversalLog;
+export { ConsoleOutput, RemoteOutput /*, AWSCloudWatchLogsOutput*/ };

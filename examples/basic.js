@@ -2,7 +2,9 @@
 
 // ./node_modules/.bin/babel-node examples/basic.js
 
-let log = require('../src/').create({ appName: 'examples' });
+import UniversalLog from '../src/';
+
+let log = new UniversalLog({ appName: 'examples' });
 
 log.addDecorator(function(message) {
   return message + ' (user@domain.com)';
@@ -19,8 +21,7 @@ log.alert('The building is on fire');
 log.emergency('What could be worse?');
 
 log.error(undefined);
-
-// log.error(new Error('An error occured'));
+log.error(new Error('An error occured'));
 
 let timer = log.createTimer();
 setTimeout(() => timer.stop(), 250);
