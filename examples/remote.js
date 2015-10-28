@@ -6,7 +6,7 @@ import UniversalLog, { RemoteOutput } from '../src/';
 
 let log = new UniversalLog({
   appName: 'examples',
-  outputs: [new RemoteOutput({ url: 'http://localhost:8888/v1' })]
+  outputs: [new RemoteOutput('http://localhost:8888/v1')]
 });
 
 log.silence('Should not be displayed');

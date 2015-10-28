@@ -5,8 +5,6 @@ import environment from 'better-node-env';
 import betterHostname from 'better-hostname';
 
 import ConsoleOutput from './outputs/console';
-import RemoteOutput from './outputs/remote';
-// import AWSCloudWatchLogsOutput from './outputs/aws-cloud-watch-logs';
 
 export class UniversalLog {
   // options:
@@ -124,4 +122,6 @@ export class UniversalLog {
 }
 
 export default UniversalLog;
-export { ConsoleOutput, RemoteOutput /*, AWSCloudWatchLogsOutput*/ };
+export { ConsoleOutput };
+export { RemoteOutput } from './outputs/remote';
+export { AWSCloudWatchLogsOutput } from './outputs/aws-cloud-watch-logs';

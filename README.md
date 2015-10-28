@@ -8,6 +8,12 @@ Logger for Node and Browserify.
 npm install --save universal-log
 ```
 
+## Usage
+
+```
+// TODO
+```
+
 ## License
 
 MIT

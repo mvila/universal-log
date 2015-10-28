@@ -1,21 +1,19 @@
 'use strict';
 
-let KindaObject = require('kinda-object');
-let CloudWatchLogs = require('kinda-aws').CloudWatchLogs;
+export class AWSCloudWatchLogsOutput {
+  constructor(cloudWatchLogs) {
+    if (!cloudWatchLogs) {
+      throw new Error('\'cloudWatchLogs\' parameter is missing');
+    }
+    this.cloudWatchLogs = cloudWatchLogs;
+  }
 
-let AWSCloudWatchLogsOutput = KindaObject.extend('AWSCloudWatchLogsOutput', function() {
-  this.creator = function(options = {}) {
-    let logs = options.awsCloudWatchLogs;
-    if (!CloudWatchLogs.isClassOf(logs)) logs = CloudWatchLogs.create(logs);
-    this.logs = logs;
-  };
-
-  this.write = function(logName, hostName, level, message) {
-    let groupName = logName || 'undefined-group';
-    let streamName = hostName || 'undefined-stream';
+  write(logName, hostName, level, message) {
+    let groupName = logName || 'unnamed-log';
+    let streamName = hostName || 'unnamed-host';
     message = '[' + level.toUpperCase() + '] ' + message;
-    this.logs.putEvent(groupName, streamName, message);
-  };
-});
+    this.cloudWatchLogs.putEvent(groupName, streamName, message);
+  }
+}
 
-module.exports = AWSCloudWatchLogsOutput;
+export default AWSCloudWatchLogsOutput;

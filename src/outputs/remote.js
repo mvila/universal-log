@@ -3,8 +3,7 @@
 import fetch from 'isomorphic-fetch';
 
 export class RemoteOutput {
-  constructor(options = {}) {
-    let url = options.url;
+  constructor(url) {
     if (!url) throw new Error('Remote output \'url\' is missing');
     if (url.endsWith('/')) url = url.slice(0, -1);
     url += '/logs';

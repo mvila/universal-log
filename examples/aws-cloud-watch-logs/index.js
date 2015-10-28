@@ -2,13 +2,13 @@
 
 // ./node_modules/.bin/babel-node --harmony examples/aws-cloud-watch-logs/index.js
 
-let KindaLog = require('../../src/');
-let awsConfig = require('./aws-config');
+import UniversalLog, { AWSCloudWatchLogsOutput } from '../../src/';
+import { CloudWatchLogs } from 'easy-aws';
+import awsConfig from './aws-config';
 
-let log = KindaLog.create({ appName: 'examples' });
-log.addOutput(KindaLog.AWSCloudWatchLogsOutput.create({
-  awsCloudWatchLogs: awsConfig
-}));
+let log = new UniversalLog({ appName: 'examples' });
+let cloudWatchLogs = new CloudWatchLogs(awsConfig);
+log.addOutput(new AWSCloudWatchLogsOutput(cloudWatchLogs));
 
 log.info('Hello');
 for (let i = 1; i <= 5; i++) {
@@ -16,13 +16,13 @@ for (let i = 1; i <= 5; i++) {
 }
 log.error('An error?');
 
-// let util = require('kinda-util').create();
+// import sleep from 'sleep-promise';
 // (async function() {
 //   log.info('Start');
-//   await util.timeout(2000);
+//   await sleep(2000);
 //   for (let i = 0; i < 1000; i++) {
 //     log.info(i);
-//     await util.timeout(50);
+//     await sleep(50);
 //   }
 //   log.info('End');
 // }).call(this).catch(function(err) {
