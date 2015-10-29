@@ -1,6 +1,6 @@
 {
   "name": "universal-log",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Flexible logger for Node.js and Browserify",
   "author": "Manuel Vila <mvila@3base.com>",
   "license": "MIT",
