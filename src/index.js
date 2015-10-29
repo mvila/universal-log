@@ -12,7 +12,7 @@ export class UniversalLog {
   //   appName
   //   hostName
   //   outputs
-  //   mutedLevels
+  //   muteLevels
   //   decorators
   constructor(options = {}) {
     let logName = options.logName;
@@ -30,11 +30,11 @@ export class UniversalLog {
       outputs = [output];
     }
 
-    let mutedLevels = options.mutedLevels;
-    if (!mutedLevels) {
-      mutedLevels = ['silence'];
+    let muteLevels = options.muteLevels;
+    if (!muteLevels) {
+      muteLevels = ['silence'];
       if (environment !== 'development') {
-        mutedLevels.push('debug');
+        muteLevels.push('debug');
       }
     }
 
@@ -43,7 +43,7 @@ export class UniversalLog {
     this.logName = logName;
     this.hostName = hostName;
     this.outputs = outputs;
-    this.mutedLevels = mutedLevels;
+    this.muteLevels = muteLevels;
     this.decorators = decorators;
 
     // make convenient shorthands bound to the instance
@@ -93,7 +93,7 @@ export class UniversalLog {
   }
 
   dispatch(logName, hostName, level, message, options) {
-    if (this.mutedLevels.includes(level)) return;
+    if (this.muteLevels.includes(level)) return;
     for (let output of this.outputs) {
       output.write(logName, hostName, level, message, options);
     }
