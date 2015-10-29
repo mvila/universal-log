@@ -13,10 +13,10 @@ npm install --save universal-log
 ```javascript
 import UniversalLog from 'universal-log';
 
-let log = new UniversalLog({ appName: 'example' });
+let logger = new UniversalLog({ appName: 'example' });
 
-log.info('Little info');
-log.error('There is something wrong');
+logger.info('Little info');
+logger.error('There is something wrong');
 ```
 
 ## Concepts
@@ -46,12 +46,12 @@ It is easy to create your own type of output. An output is just an object with a
 
 ### `new UniversalLog([options])`
 
-Create an instance of UniversalLog.
+Create a logger.
 
 ```javascript
 import UniversalLog from 'universal-log';
 
-let log = new UniversalLog({ appName: 'example' });
+let logger = new UniversalLog({ appName: 'example' });
 ```
 
 #### `options`
@@ -63,31 +63,51 @@ let log = new UniversalLog({ appName: 'example' });
 - `muteLevels`: mute the specified levels. By default, the `silence` level is muted. The `debug` level is also muted when `NODE_ENV` is undefined or equal to `'development'`.
 - `decorators`: a simple way to "decorate" log messages. A decorator is a function receiving a string (a log message) and returning a string (the decorated log message). Decorators are useful to  add some contextual information to log messages. For example, a decorator could be used to add the name of the current user.
 
-### `log.log(level, messsage)`
+### `logger.addOutput(output)`
+
+Add an output to the logger.
+
+```javascript
+import { RemoteOutput } from 'universal-log';
+
+logger.addOutput(new RemoteOutput('http://api.example.com/v1'));
+```
+
+### `logger.addDecorator(decorator)`
+
+Add a decorator to the logger.
+
+```javascript
+logger.addDecorator(function(message) {
+  return message + ` (current user: ${username})`;
+});
+```
+
+### `logger.log(level, messsage)`
 
 Log a message with the specified level.
 
 ```javascript
-log.log('info', 'Little info');
-log.log('warning', 'There is something wrong');
+logger.log('info', 'Little info');
+logger.log('warning', 'There is something wrong');
 ```
 
-### `log.{level}(messsage)`
+### `logger.{level}(messsage)`
 
 Convenient shorthand methods to log messages with different levels.
 
 ```javascript
-log.debug('Little info');
-log.error('There is something wrong');
-log.warning('Be careful, something is happening');
+logger.debug('Little info');
+logger.error('There is something wrong');
+logger.warning('Be careful, something is happening');
 ```
 
-### `log.createTimer([label])`
+### `logger.createTimer([label])`
 
 Measure and log the time passed doing something.
 
 ```javascript
-let timer = log.createTimer('Heavy computation');
+let timer = logger.createTimer('Heavy computation');
 // ...
 timer.stop();
 ```
