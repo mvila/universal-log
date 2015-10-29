@@ -111,6 +111,7 @@ export class UniversalLog {
     return timer;
   }
 
+  // TODO: document (or remove) this method
   getLoggerMiddleware() { // koa logger middleware
     let that = this;
     return function *(next) {
