@@ -3,7 +3,8 @@
 import chalk from 'chalk';
 
 const STYLES = {
-  debug: { method: 'log', levelColor: chalk.gray, messageColor: chalk.gray },
+  trace: { method: 'log', levelColor: chalk.gray, messageColor: chalk.gray },
+  debug: { method: 'log', messageColor: chalk.gray },
   info: { method: 'info', levelColor: chalk.green },
   notice: { method: 'info', levelColor: chalk.yellow },
   warning: { method: 'warn', levelColor: chalk.magenta },

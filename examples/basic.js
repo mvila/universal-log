@@ -11,6 +11,7 @@ log.addDecorator(function(message) {
 });
 
 log.silence('Should not be displayed');
+log.trace('Low-level trace message');
 log.debug('Small debugging message');
 log.info('Little info');
 log.notice('Important info');

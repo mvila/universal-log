@@ -23,12 +23,11 @@ logger.error('There is something wrong');
 
 ### Levels
 
-There are 9 levels of logging: `silence`, `debug`, `info`, `notice`, `warning`,
-`error`, `critical`, `alert` and `emergency`.
+There are 10 levels of logging: `silence`, `trace`, `debug`, `info`, `notice`, `warning`, `error`, `critical`, `alert` and `emergency`.
 
 Depending on the type of output, a level can have an effect on the way a log message is formated. For example, the `ConsoleOutput` uses different colors for each levels.
 
-A `muteLevels` option allows to mute some levels. By default, the `silence` level is muted. The `debug` level is also muted when `NODE_ENV` is undefined or equal to `'development'`.
+A `muteLevels` option allows to mute some levels. By default, the `silence` level is muted. The `trace` and `debug` levels are also muted when `NODE_ENV` is undefined or equal to `'development'`.
 
 ### Outputs
 
@@ -60,7 +59,7 @@ let logger = new UniversalLog({ appName: 'example' });
 - `appName`: the name of the running application.
 - `hostName`: the name of the host where the application is running. If not specified, `hostName` is determined from the hostname of the machine. If the application is running in a browser, `hostName` defaults to `'browser'`.
 - `outputs`: the outputs where all the logging goes. The default is an instance of `ConsoleOutput`.
-- `muteLevels`: mute the specified levels. By default, the `silence` level is muted. The `debug` level is also muted when `NODE_ENV` is undefined or equal to `'development'`.
+- `muteLevels`: mute the specified levels. By default, the `silence` level is muted. The `trace` and `debug` levels are also muted when `NODE_ENV` is undefined or equal to `'development'`.
 - `decorators`: a simple way to "decorate" log messages. A decorator is a function receiving a string (a log message) and returning a string (the decorated log message). Decorators are useful to  add some contextual information to log messages. For example, a decorator could be used to add the name of the current user.
 
 ### `logger.addOutput(output)`

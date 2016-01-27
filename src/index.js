@@ -34,6 +34,7 @@ export class UniversalLog {
     if (!muteLevels) {
       muteLevels = ['silence'];
       if (environment !== 'development') {
+        muteLevels.push('trace');
         muteLevels.push('debug');
       }
     }
@@ -48,7 +49,7 @@ export class UniversalLog {
 
     // make convenient shorthands bound to the instance
     let levels = [
-      'silence', 'debug', 'info', 'notice', 'warning',
+      'silence', 'trace', 'debug', 'info', 'notice', 'warning',
       'error', 'critical', 'alert', 'emergency'
     ];
     for (let level of levels) {
