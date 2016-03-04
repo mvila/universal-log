@@ -22,7 +22,7 @@ log.alert('The building is on fire');
 log.emergency('What could be worse?');
 
 log.error(undefined);
-log.error(new Error('An error occured'));
+log.error(new Error('Example of error'));
 
 let timer = log.createTimer();
 setTimeout(() => timer.stop(), 250);
