@@ -2,6 +2,18 @@
   "name": "universal-log",
   "version": "0.3.7",
   "description": "Flexible logger for Node.js and the browser",
+  "keywords": [
+    "log",
+    "node",
+    "browser",
+    "universal",
+    "logger",
+    "aws",
+    "cloudwatch",
+    "console",
+    "error",
+    "remote"
+  ],
   "author": "Manuel Vila <mvila@3base.com>",
   "license": "MIT",
   "main": "lib/index.js",
