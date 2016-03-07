@@ -1,6 +1,6 @@
 {
   "name": "universal-log",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "Flexible logger for Node.js and the browser",
   "keywords": [
     "log",
