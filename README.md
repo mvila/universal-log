@@ -113,4 +113,4 @@ logger.addDecorator(function(message) {
 
 ## License
 
-MIT
+Who cares?

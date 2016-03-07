@@ -15,7 +15,7 @@
     "remote"
   ],
   "author": "Manuel Vila <mvila@3base.com>",
-  "license": "MIT",
+  "license": "Whatever",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
