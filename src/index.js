@@ -118,7 +118,8 @@ export class UniversalLog {
     return function *(next) {
       yield next;
       let level = this.logLevel != null ? this.logLevel : 'info';
-      that[level](this.method + ' ' + this.url);
+      let url = this.logURL != null ? this.logURL : this.url;
+      that[level](this.method + ' ' + url);
     };
   }
 }
