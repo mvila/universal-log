@@ -62,6 +62,35 @@ let logger = new UniversalLog({ appName: 'example' });
 - `muteLevels`: mute the specified levels. By default, the `silence` level is muted. The `trace` and `debug` levels are also muted when `NODE_ENV` is undefined or equal to `'development'`.
 - `decorators`: a simple way to "decorate" log messages. A decorator is a function receiving a string (a log message) and returning a string (the decorated log message). Decorators are useful to  add some contextual information to log messages. For example, a decorator could be used to add the name of the current user.
 
+### `logger.log(level, messsage)`
+
+Log a message with the specified level.
+
+```javascript
+logger.log('info', 'Little info');
+logger.log('warning', 'There is something wrong');
+```
+
+### `logger.{level}(messsage)`
+
+Convenient shorthand methods to log messages for a specific level.
+
+```javascript
+logger.debug('Little info');
+logger.error('There is something wrong');
+logger.warning('Be careful, something is happening');
+```
+
+### `logger.createTimer([label])`
+
+Measure and log the time passed doing something.
+
+```javascript
+let timer = logger.createTimer('Heavy computation');
+// ...
+timer.stop();
+```
+
 ### `logger.addOutput(output)`
 
 Add an output to the logger.
@@ -80,35 +109,6 @@ Add a decorator to the logger.
 logger.addDecorator(function(message) {
   return message + ` (current user: ${username})`;
 });
-```
-
-### `logger.log(level, messsage)`
-
-Log a message with the specified level.
-
-```javascript
-logger.log('info', 'Little info');
-logger.log('warning', 'There is something wrong');
-```
-
-### `logger.{level}(messsage)`
-
-Convenient shorthand methods to log messages with different levels.
-
-```javascript
-logger.debug('Little info');
-logger.error('There is something wrong');
-logger.warning('Be careful, something is happening');
-```
-
-### `logger.createTimer([label])`
-
-Measure and log the time passed doing something.
-
-```javascript
-let timer = logger.createTimer('Heavy computation');
-// ...
-timer.stop();
 ```
 
 ## License
