@@ -1,6 +1,6 @@
 # UniversalLog [![Build Status](https://travis-ci.org/mvila/universal-log.svg?branch=master)](https://travis-ci.org/mvila/universal-log)
 
-Flexible logger for Node.js and Browserify.
+Flexible logger for Node.js and the browser.
 
 ## Installation
 
