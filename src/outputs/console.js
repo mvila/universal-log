@@ -11,7 +11,7 @@ const STYLES = {
   error: { method: 'error', levelColor: chalk.red },
   critical: { method: 'error', levelColor: chalk.red.underline },
   alert: { method: 'error', levelColor: chalk.red.bold },
-  emergency: { method: 'error', levelColor: chalk.red.bold.inverse }
+  emergency: { method: 'error', levelColor: chalk.red.bold }
 };
 
 export class ConsoleOutput {
